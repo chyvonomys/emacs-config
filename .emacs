@@ -4,6 +4,11 @@
       (setq find-program (shell-quote-argument "D:/GNU/bin/find.exe"))
       (setq grep-program (shell-quote-argument "D:/GNU/bin/grep.exe"))))
 
+(if (string= (system-name) "lilac")
+    (progn
+      (print "Setting command key to act as C on lilac (osx)")
+      (setq mac-command-modifier 'control)))
+
 ;; PACKAGES
 (when (>= emacs-major-version 24)
   (require 'package)
@@ -19,6 +24,7 @@
 			 ((string= name "deep") '(:family "Liberation Mono" :height 90))
 			 ((string= name "MAREVO") '(:family "Liberation Mono" :height 90))
 			 ((string= name "RV015") '(:family "Droid Sans Mono" :height 110))
+			 ((string= name "lilac") '(:family "PT Mono" :height 110))
 			 (t nil))))
 
 (custom-set-variables
