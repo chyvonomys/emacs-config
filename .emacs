@@ -6,10 +6,19 @@
       (setq find-program (shell-quote-argument "D:/GNU/bin/find.exe"))
       (setq grep-program (shell-quote-argument "D:/GNU/bin/grep.exe"))))
 
-(if (string= my-system-name "lilac")
-    (progn
-      (print "Setting command key to act as C on lilac (osx)")
-      (setq mac-command-modifier 'control)))
+;; lilac setup
+;; Seil:
+;; -- CapsLock -> ESC
+;; -- RightCommand -> RightControl
+;; -- language -> Option+Space
+;; -- Alfred -> Command+Space
+
+;; use Seil to remap Right Command to Right Control
+
+;; (if (string= my-system-name "lilac")
+;;     (progn
+;;       (print "Setting command key to act as C on lilac (osx)")
+;;       (setq mac-command-modifier 'control)))
 
 (require 'ido)
 (ido-mode 1)
@@ -23,9 +32,13 @@
 (require 'bind-key)
 (require 'magit)
 
+;; 'toggles'
 (bind-key "C-c t t" 'toggle-truncate-lines)
+(bind-key "C-c t c" 'comment-or-uncomment-region)
+(bind-key "C-c t w" 'whitespace-mode)
+
 (bind-key "C-c g" 'magit-status)
-(bind-key "C-c w" 'whitespace-mode)
+(bind-key "C-c c" 'eshell-command)
 
 (require 'free-keys)
 
@@ -116,3 +129,6 @@
 
 ;; LISTEN
 (server-start)
+
+;; 175 x 45
+(set-frame-size (selected-frame) 175 45)
