@@ -15,20 +15,31 @@
 
 ;; use Seil to remap Right Command to Right Control
 
-;; (if (string= my-system-name "lilac")
-;;     (progn
-;;       (print "Setting command key to act as C on lilac (osx)")
-;;       (setq mac-command-modifier 'control)))
+(if (string= my-system-name "lilac")
+    (progn
+      (print "Setting command key to act as C on lilac (osx)")
+      (setq mac-command-modifier 'control)))
 
 (require 'ido)
 (ido-mode 1)
+
+(setq my-package-list '(bind-key magit))
 
 ;; EXPAND REGION
 ;; (require 'expand-region)
 ;; (global-set-key (kbd "C-=") 'er/expand-region)
 
 (require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(dolist (x my-package-list)
+  (unless (package-installed-p x)
+    (package-install x)))
+
 (require 'bind-key)
 (require 'magit)
 
@@ -39,8 +50,6 @@
 
 (bind-key "C-c g" 'magit-status)
 (bind-key "C-c c" 'eshell-command)
-
-(require 'free-keys)
 
 (setq my-default-font (cond
 		       ((string= my-system-name "deep") '(:family "Liberation Mono" :height 90))
@@ -126,9 +135,3 @@
 
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode))
-
-;; LISTEN
-(server-start)
-
-;; 175 x 45
-(set-frame-size (selected-frame) 175 45)
