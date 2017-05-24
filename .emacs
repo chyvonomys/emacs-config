@@ -55,8 +55,7 @@
 		       ((string= my-system-name "deep") '(:family "Liberation Mono" :height 90))
 		       ((string= my-system-name "MAREVO") '(:family "Liberation Mono" :height 90))
 		       ((string= my-system-name "RV015") '(:family "Droid Sans Mono" :height 110))
-		       ;;((string= my-system-name "lilac") '(:family "PT Mono" :height 110))
-		       ((string= my-system-name "lilac") '(:family "Inconsolata" :height 140))
+		       ((string= my-system-name "lilac") '(:family "PT Mono" :height 120))
 		       (t nil)))
 
 (custom-set-variables
@@ -135,3 +134,13 @@
 
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode))
+
+;; RUST
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+
+(add-hook 'racer-mode-hook #'company-mode)
+
+(require 'rust-mode)
+(define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+(setq company-tooltip-align-annotations t)
