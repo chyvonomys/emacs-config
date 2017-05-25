@@ -43,6 +43,8 @@
 (require 'bind-key)
 (require 'magit)
 
+(global-set-key (kbd "<f5>") 'redraw-display)
+
 ;; 'toggles'
 (bind-key "C-c t t" 'toggle-truncate-lines)
 (bind-key "C-c t c" 'comment-or-uncomment-region)
@@ -56,6 +58,7 @@
 		       ((string= my-system-name "MAREVO") '(:family "Liberation Mono" :height 90))
 		       ((string= my-system-name "RV015") '(:family "Droid Sans Mono" :height 110))
 		       ((string= my-system-name "lilac") '(:family "PT Mono" :height 120))
+		       ((string= my-system-name "COBALT") '(:family "Anka/Coder Condensed" :height 100))
 		       (t nil)))
 
 (custom-set-variables
@@ -67,6 +70,7 @@
  '(font-lock-string-face ((t (:background "#403000" :foreground "#f0c070"))))
  '(mode-line ((t (:background "#d3d7cf" :foreground "#2e3436" :box nil))))
  '(mode-line-inactive ((t (:background "#555753" :foreground "#eeeeec" :box nil))))
+ '(secondary-selection ((t (:background "#ffffbb"))))
  '(variable-pitch ((t (:family "Georgia")))))
 
 ;; scroll one line at a time (less "jumpy" than defaults)
@@ -144,3 +148,6 @@
 (require 'rust-mode)
 (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
 (setq company-tooltip-align-annotations t)
+
+(set-frame-size (selected-frame) 250 60)
+(split-window-horizontally)
