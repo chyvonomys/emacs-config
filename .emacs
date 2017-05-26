@@ -1,10 +1,24 @@
 (setq my-system-name (car (split-string (system-name) "\\.")))
 
-(if (string= my-system-name "RV015")
+;; WIN SETUP
+;; get scoop
+;; $ scoop install coreutils findutils diffutils grep git
+;; $ scoop bucket add extras
+;; $ scoop install emacs
+;; git clone emacs-config repo
+;; mklink home/AppData/Roaming/.emacs emacs-config/.emacs
+
+;; workaround for ~/.emacs.d/server being 'unsafe' on windows
+(when (and (>= emacs-major-version 23)
+           (equal window-system 'w32))
+  (defun server-ensure-safe-dir (dir) "Noop" t))
+
+(if (string= my-system-name "RV589")
     (progn
-      (print "Setting specific paths to find and grep on RV015")
-      (setq find-program (shell-quote-argument "D:/GNU/bin/find.exe"))
-      (setq grep-program (shell-quote-argument "D:/GNU/bin/grep.exe"))))
+      (print "Setting specific paths to find and grep on RV589")
+      (setq find-program (shell-quote-argument
+			  (substitute-in-file-name
+			   "$USERPROFILE/scoop/shims/find.exe")))))
 
 ;; lilac setup
 ;; Seil:
@@ -23,7 +37,7 @@
 (require 'ido)
 (ido-mode 1)
 
-(setq my-package-list '(bind-key magit))
+(setq my-package-list '(bind-key magit rust-mode restclient))
 
 ;; EXPAND REGION
 ;; (require 'expand-region)
@@ -56,7 +70,7 @@
 (setq my-default-font (cond
 		       ((string= my-system-name "deep") '(:family "Liberation Mono" :height 90))
 		       ((string= my-system-name "MAREVO") '(:family "Liberation Mono" :height 90))
-		       ((string= my-system-name "RV015") '(:family "Droid Sans Mono" :height 110))
+		       ((string= my-system-name "RV589") '(:family "Consolas" :height 100))
 		       ((string= my-system-name "lilac") '(:family "PT Mono" :height 120))
 		       ((string= my-system-name "COBALT") '(:family "Anka/Coder Condensed" :height 100))
 		       (t nil)))
