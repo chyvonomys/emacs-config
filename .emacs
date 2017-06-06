@@ -37,7 +37,8 @@
 (require 'ido)
 (ido-mode 1)
 
-(setq my-package-list '(bind-key magit rust-mode restclient))
+(setq my-package-list '(bind-key magit rust-mode restclient
+				 toml-mode racer company company-irony))
 
 ;; EXPAND REGION
 ;; (require 'expand-region)
