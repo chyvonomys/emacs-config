@@ -8,11 +8,6 @@
 ;; git clone emacs-config repo
 ;; mklink home/AppData/Roaming/.emacs emacs-config/.emacs
 
-;; workaround for ~/.emacs.d/server being 'unsafe' on windows
-(when (and (>= emacs-major-version 23)
-           (equal window-system 'w32))
-  (defun server-ensure-safe-dir (dir) "Noop" t))
-
 (if (string= my-system-name "RV589")
     (progn
       (print "Setting specific paths to find and grep on RV589")
@@ -37,7 +32,7 @@
 (require 'ido)
 (ido-mode 1)
 
-(setq my-package-list '(bind-key magit rust-mode restclient
+(setq my-package-list '(bind-key magit rust-mode restclient lua-mode
 				 toml-mode racer company company-irony))
 
 ;; EXPAND REGION
@@ -58,7 +53,8 @@
 (require 'bind-key)
 (require 'magit)
 
-(global-set-key (kbd "<f5>") 'redraw-display)
+(bind-key "<f5>" 'redraw-display)
+(bind-key "C-<f5>" 'revert-buffer)
 
 ;; 'toggles'
 (bind-key "C-c t t" 'toggle-truncate-lines)
@@ -166,3 +162,8 @@
 
 (set-frame-size (selected-frame) 250 60)
 (split-window-horizontally)
+
+;; workaround for ~/.emacs.d/server being 'unsafe' on windows
+(when (and (>= emacs-major-version 23)
+	   (equal window-system 'w32))
+  (defun server-ensure-safe-dir (dir) "Noop" t))
