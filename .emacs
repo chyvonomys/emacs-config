@@ -32,19 +32,21 @@
 (require 'ido)
 (ido-mode 1)
 
-(setq my-package-list '(bind-key magit rust-mode restclient lua-mode
-				 toml-mode racer company company-irony))
+(setq my-package-list '(avy bind-key which-key magit rust-mode restclient flycheck-rust lua-mode toml-mode interaction-log ob-restclient dockerfile-mode docker-tramp))
 
-;; EXPAND REGION
+;; EXPAND-REGION
 ;; (require 'expand-region)
 ;; (global-set-key (kbd "C-=") 'er/expand-region)
+
+;; MULTIPLE-CURSORS
+;; (require 'multiple-cursors)
+;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
-
-(unless package-archive-contents
-  (package-refresh-contents))
+(package-refresh-contents t)
 
 (dolist (x my-package-list)
   (unless (package-installed-p x)
@@ -55,6 +57,11 @@
 
 (bind-key "<f5>" 'redraw-display)
 (bind-key "C-<f5>" 'revert-buffer)
+
+(defun my-edit-config ()
+  (interactive)
+  (find-file "~/.emacs"))
+(bind-key "C-c `" 'my-edit-config)
 
 ;; 'toggles'
 (bind-key "C-c t t" 'toggle-truncate-lines)
@@ -68,17 +75,31 @@
 		       ((string= my-system-name "deep") '(:family "Liberation Mono" :height 90))
 		       ((string= my-system-name "MAREVO") '(:family "Liberation Mono" :height 90))
 		       ((string= my-system-name "RV589") '(:family "Consolas" :height 100))
-		       ((string= my-system-name "lilac") '(:family "PT Mono" :height 120))
+		       ((string= my-system-name "lilac") '(:family "Fantasque Sans Mono" :height 120))
 		       ((string= my-system-name "COBALT") '(:family "Anka/Coder Condensed" :height 100))
 		       (t nil)))
 
 (custom-set-variables
- `(custom-enabled-themes '(tango-dark)))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(cursor-type 'bar)
+ '(custom-enabled-themes '(tango-dark))
+ '(mode-require-final-newline nil)
+ '(package-selected-packages
+   '(avy which-key toml-mode rust-mode ob-restclient magit lua-mode interaction-log flycheck-rust dockerfile-mode docker-tramp bind-key))
+ '(require-final-newline nil)
+ '(x-stretch-cursor t))
 
 (custom-set-faces
- `(default ((t ,my-default-font)))
- '(linum ((t (:foreground "LightSkyBlue4"))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Fantasque Sans Mono" :height 120))))
  '(font-lock-string-face ((t (:background "#403000" :foreground "#f0c070"))))
+ '(linum ((t (:background "black" :foreground "LightSkyBlue4" :box nil))))
  '(mode-line ((t (:background "#d3d7cf" :foreground "#2e3436" :box nil))))
  '(mode-line-inactive ((t (:background "#555753" :foreground "#eeeeec" :box nil))))
  '(secondary-selection ((t (:background "#ffffbb"))))
@@ -151,19 +172,51 @@
 (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode))
 
 ;; RUST
-(add-hook 'rust-mode-hook #'racer-mode)
-(add-hook 'racer-mode-hook #'eldoc-mode)
-
-(add-hook 'racer-mode-hook #'company-mode)
-
 (require 'rust-mode)
-(define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
-(setq company-tooltip-align-annotations t)
+(defun my-rust-mode-hook ()
+  (flycheck-rust-setup)
+  (flycheck-mode)
+  (setq indent-tabs-mode nil))
 
-(set-frame-size (selected-frame) 250 60)
+(add-hook 'rust-mode-hook 'my-rust-mode-hook)
+;(add-hook 'rust-mode-hook #'racer-mode)
+;(add-hook 'racer-mode-hook #'eldoc-mode)
+;(add-hook 'racer-mode-hook #'company-mode)
+;(define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+;(setq company-tooltip-align-annotations t)
+
+(set-frame-size (selected-frame) 200 50)
 (split-window-horizontally)
+
+(defface rust-unit '((t (:background "#0c3540" :foreground "#2aa198"))) "Cyan")
+(font-lock-add-keywords 'rust-mode '(("\\(^\\|->\\|=>\\|:\\|,\\|;\\|[^_[:alnum:]]let\\|[^_[:alnum:]]if\\|[^_[:alnum:]]match\\|[^_[:alnum:]]return\\|\\[\\|(\\|{\\|<\\||\\|=\\)\\([[:space:]]*\\)\\(()\\)" 3 'rust-unit)))
 
 ;; workaround for ~/.emacs.d/server being 'unsafe' on windows
 (when (and (>= emacs-major-version 23)
 	   (equal window-system 'w32))
   (defun server-ensure-safe-dir (dir) "Noop" t))
+
+(setq w32-get-true-file-attributes nil)
+
+;; AVY
+(require 'avy)
+(bind-key "C-," 'avy-goto-char-timer)
+
+;; WHICH-KEY
+(require 'which-key)
+(which-key-mode)
+(which-key-setup-side-window-right)
+
+;; INTERACTION-LOG
+(require 'interaction-log)
+(interaction-log-mode +1)
+(global-set-key (kbd "C-h C-l") (lambda () (interactive) (display-buffer ilog-buffer-name)))
+
+(setq lsp-rust-server 'rust-analyzer)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((restclient . t)))
+
+(put 'set-goal-column 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
