@@ -99,7 +99,6 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Fantasque Sans Mono" :height 120))))
  '(font-lock-string-face ((t (:background "#403000" :foreground "#f0c070"))))
- '(linum ((t (:background "black" :foreground "LightSkyBlue4" :box nil))))
  '(mode-line ((t (:background "#d3d7cf" :foreground "#2e3436" :box nil))))
  '(mode-line-inactive ((t (:background "#555753" :foreground "#eeeeec" :box nil))))
  '(secondary-selection ((t (:background "#ffffbb"))))
@@ -124,14 +123,11 @@
 (setq inhibit-startup-screen t)
 
 (transient-mark-mode 1)
+(delete-selection-mode 1)
 (global-font-lock-mode 1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
-
-;; line numbers
-(global-linum-mode 1)
-(setq linum-format "%4s ")
 
 ;; keep history across sessions
 (savehist-mode 1)
